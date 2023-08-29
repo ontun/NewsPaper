@@ -1,0 +1,51 @@
+{% extends 'flatpages/default.html' %}
+{% load custom_filters %}
+{% load custom_tags %}
+
+{% block title %}
+Posts
+{% endblock title %}
+
+{% block content %}
+   <h1>Все новости</h1>
+   <p>Количество новостей: {{ news | length }}</p>
+   <!-- Используем переданную из представления переменную time_now
+   и применяем к ней фильтр date. По назначению этот фильтр очень похож
+   на метод strftime у объекта datetime в Python — вывод времени
+   в указанном формате. -->
+   {% if is_not_author %}
+   <button> <a href="upgrade/"> Стать автором!</a> </button>
+   {% endif %}
+   <hr>
+   {% if news %}
+       <ul>
+           {% for new1 in news %}
+           <li>
+               <h4>{{ new1.post_tittle|censor }}</h4>
+               <p>{{ new1.post_dt|date:'M d Y' }}</p>
+               <p>{{ new1.post_text|censor|truncatechars:20 }}</p>
+           </li>
+           {% endfor %}
+       </ul>
+   {% else %}
+       <h2>Постов нет!</h2>
+   {% endif %}
+
+   {% if page_obj.has_previous %}
+       <a href="?{% url_replace page=1 %}">1</a>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+       {% endif %}
+   {% endif %}
+
+   {{ page_obj.number }}
+
+   {% if page_obj.has_next %}
+       <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+{% endblock content %}
