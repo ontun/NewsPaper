@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Подтверждение электронной почты</title>
+</head>
+<body>
+    {% csrf_token %}
+    {% load account %}
+    <h1>Здравствуйте, {{ user.username }}!</h1>
+    <h3>Для подтверждения электронной почты перейдите по <a href="{{ activate_url }}">этой ссылке</a></h3>
+</body>
+</html>

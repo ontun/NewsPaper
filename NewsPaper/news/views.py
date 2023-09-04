@@ -5,9 +5,20 @@ from .forms import NewsForm, ArticleForm
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render, reverse
 from django.contrib.auth.models import Group
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.core.exceptions import ValidationError
+from django.contrib import messages
+
+@login_required
+def subscribe(request, category_id):
+    user = request.user
+    # Проверяем, подписан ли пользователь уже на данную категорию
+    if not UserCategory.objects.filter(user=user.id).exists():
+        category = Category.objects.get(id=category_id)
+        category.subscribers.add(user.id)
+    return redirect('/search/')
 
 
 @login_required
@@ -16,6 +27,7 @@ def upgrade_me(request):
     premium_group = Group.objects.get(name='authors')
     if not request.user.groups.filter(name='authors').exists():
         premium_group.user_set.add(user)
+        Author.objects.create(user_auth=user)
     return redirect('/')
 
 
@@ -47,6 +59,7 @@ class NewsDetail(DetailView):
     context_object_name = 'news_one'
 
 
+@method_decorator(login_required, name='dispatch')
 class NewsSearch(ListView):
     # Указываем модель, объекты которой мы будем выводить
     model = Post
@@ -79,10 +92,15 @@ class NewCreate(PermissionRequiredMixin, CreateView):
     template_name = 'new_create.html'
 
     def form_valid(self, form):
-        post = form.save(commit=False)
-        post.post_select = 1
-        post.author = self.request.user.author
-        return super().form_valid(form)
+        try:
+            post = form.save(commit=False)
+            post.post_select = 1
+            post.author = self.request.user.author
+            return super().form_valid(form)
+        except ValidationError as e:
+            # Обработка ValidationError
+            # Здесь вы можете показать сообщение об ошибке пользователю
+            return self.form_invalid(form)  # возвращаем невалидную форму
 
 
 @method_decorator(login_required, name='dispatch')
@@ -107,12 +125,18 @@ class ArticleCreate(PermissionRequiredMixin, CreateView):
     form_class = ArticleForm
     model = Post
     template_name = 'article_create.html'
+    context_object_name = 'article_create'
 
     def form_valid(self, form):
-        post = form.save(commit=False)
-        post.post_select = 0
-        post.author = self.request.user.author
-        return super().form_valid(form)
+        try:
+            post = form.save(commit=False)
+            post.post_select = 1
+            post.author = self.request.user.author
+            return super().form_valid(form)
+        except ValidationError as e:
+            # Обработка ValidationError
+            # Здесь вы можете показать сообщение об ошибке пользователю
+            return self.form_invalid(form)  # возвращаем невалидную форму
 
 
 @method_decorator(login_required, name='dispatch')

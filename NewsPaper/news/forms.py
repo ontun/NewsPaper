@@ -13,8 +13,6 @@ class BasicSignupForm(SignupForm):
         return user
 
 
-
-
 class NewsForm(forms.ModelForm):
     class Meta:
         model = Post

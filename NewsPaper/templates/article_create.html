@@ -7,5 +7,7 @@
     {% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Save" />
+    <p>Вы можете делать не более 3-х публикаций в день.</p>
+
 </form>
 {% endblock content %}

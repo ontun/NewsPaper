@@ -13,6 +13,12 @@ Posts
        <input type="submit" value="Применить" />
    </form>
    <hr>
+   {% if filterset.form.is_bound and filterset.form.cleaned_data.category %}
+      <form method="post" action="{% url 'subscribe' filterset.form.cleaned_data.category %}">
+        {% csrf_token %}
+        <button type="submit">Подписаться на категорию</button>
+      </form>
+   {% endif %}
    <p>Количество новостей: {{ news_search | length }}</p>
    <!-- Используем переданную из представления переменную time_now
    и применяем к ней фильтр date. По назначению этот фильтр очень похож

@@ -1,0 +1,8 @@
+<h1>Список новых статей</h1>
+<p>Здравствуйте, {{ user.username }}!</p>
+<p>В категории "{{ category.category_name }}" за последнюю неделю появились следующие новые статьи:</p>
+<ul>
+  {% for article, url in articles  %}
+    <li><a href="{{ url }}">{{ article.post_tittle }}</a></li>
+  {% endfor %}
+</ul>
