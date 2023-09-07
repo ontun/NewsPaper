@@ -17,6 +17,7 @@ def count_publication(instance, **kwargs):
         raise ValidationError('')
 
 
+'''
 @receiver(m2m_changed, sender=Post.category.through)
 def send_mail_category(sender, instance, action, **kwargs):
     if action == 'post_add':
@@ -43,4 +44,4 @@ def send_mail_category(sender, instance, action, **kwargs):
             to=mail_list,  # это то же, что и recipients_list
         )
         msg.attach_alternative(html_content, "text/html")  # добавляем html
-        msg.send()  # отсылае
+        msg.send()  # отсылае '''

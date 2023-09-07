@@ -172,5 +172,12 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER + '@yandex.ru'
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 
-# если задача не выполняется за 25 секунд, то она автоматически снимается, можете поставить время побольше, но как правило, это сильно бьёт по производительности сервера
+# если задача не выполняется за 25 секунд, то она автоматически снимается, можете поставить время побольше,
+# но как правило, это сильно бьёт по производительности сервера
 APSCHEDULER_RUN_NOW_TIMEOUT = 60  # Seconds
+
+CELERY_BROKER_URL = 'redis://default:suFMQWD5m1negATWUbKI2I4obsxq5cyv@redis-16852.c228.us-central1-1.gce.cloud.redislabs.com:16852'
+CELERY_RESULT_BACKEND = 'redis://default:suFMQWD5m1negATWUbKI2I4obsxq5cyv@redis-16852.c228.us-central1-1.gce.cloud.redislabs.com:16852'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'

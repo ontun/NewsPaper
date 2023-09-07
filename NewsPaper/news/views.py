@@ -9,7 +9,8 @@ from django.shortcuts import redirect, render, reverse
 from django.contrib.auth.models import Group
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import ValidationError
-from django.contrib import messages
+from .tasks import send_mail_category
+
 
 @login_required
 def subscribe(request, category_id):
@@ -96,7 +97,9 @@ class NewCreate(PermissionRequiredMixin, CreateView):
             post = form.save(commit=False)
             post.post_select = 1
             post.author = self.request.user.author
-            return super().form_valid(form)
+            v = super().form_valid(form)
+            send_mail_category.delay(post.id)
+            return v
         except ValidationError as e:
             # Обработка ValidationError
             # Здесь вы можете показать сообщение об ошибке пользователю
@@ -132,7 +135,9 @@ class ArticleCreate(PermissionRequiredMixin, CreateView):
             post = form.save(commit=False)
             post.post_select = 1
             post.author = self.request.user.author
-            return super().form_valid(form)
+            v = super().form_valid(form)
+            send_mail_category.delay(post.id)
+            return v
         except ValidationError as e:
             # Обработка ValidationError
             # Здесь вы можете показать сообщение об ошибке пользователю

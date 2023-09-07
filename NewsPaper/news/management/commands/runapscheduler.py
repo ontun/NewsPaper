@@ -11,7 +11,7 @@ from datetime import date, timedelta
 from django.template import loader
 from django.db.models import Q
 from django.urls import reverse_lazy
-
+'''
 logger = logging.getLogger(__name__)
 
 
@@ -92,3 +92,4 @@ class Command(BaseCommand):
             logger.info("Stopping scheduler...")
             scheduler.shutdown()
             logger.info("Scheduler shut down successfully!")
+'''
