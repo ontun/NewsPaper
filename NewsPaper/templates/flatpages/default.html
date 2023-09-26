@@ -7,13 +7,14 @@
         <meta name="author" content="" />
         <title>Bare - Start Bootstrap Template</title>
         <!-- Favicon-->
-
+        {% load cache %}
         <!-- Core theme CSS (includes Bootstrap)-->
         {% load static %}
         <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
     </head>
     <body>
         <!-- Responsive navbar-->
+        {% cache 180 "navbar_cache" %}
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
            <div class="container">
                <a class="navbar-brand" href="#">Django flatpages</a>
@@ -46,6 +47,7 @@
                </div>
            </div>
         </nav>
+        {% endcache %}
         <!-- Page content-->
         <div class="container">
            <div class="row">

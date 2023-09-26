@@ -10,6 +10,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import ValidationError
 from .tasks import send_mail_category
+from django.core.cache import cache
 
 
 @login_required
@@ -58,6 +59,16 @@ class NewsDetail(DetailView):
     template_name = 'news_one.html'
     # Название объекта, в котором будет выбранный пользователем продукт
     context_object_name = 'news_one'
+
+    def get_object(self, *args, **kwargs):  # переопределяем метод получения объекта, как ни странно
+        obj = cache.get(f'post-{self.kwargs["pk"]}',
+                        None)  # кэш очень похож на словарь, и метод get действует так же. Он забирает значение по ключу, если его нет, то забирает None.
+
+        # если объекта нет в кэше, то получаем его и записываем в кэш
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            cache.set(f'post-{self.kwargs["pk"]}', obj)
+            return obj
 
 
 @method_decorator(login_required, name='dispatch')

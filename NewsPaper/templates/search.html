@@ -1,11 +1,13 @@
 {% extends 'flatpages/default.html' %}
 {% load custom_filters %}
 {% load custom_tags %}
+{% load cache %}
 
 {% block title %}
 Posts
 {% endblock title %}
 
+{% cache 60 block %}
 {% block content %}
    <h1>Поиск новостей</h1>
     <form action="" method="get">
@@ -55,3 +57,4 @@ Posts
        {% endif %}
    {% endif %}
 {% endblock content %}
+{% endcache %}
